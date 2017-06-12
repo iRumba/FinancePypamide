@@ -13,7 +13,7 @@ namespace FinancePypamide
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            Session.Timeout = 60; 
+            //Session.Timeout = 60; 
         }
 
         //protected void Application_BeginRequest(object sender, EventArgs e)

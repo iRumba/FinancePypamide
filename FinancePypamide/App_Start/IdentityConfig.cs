@@ -14,7 +14,7 @@ namespace FinancePypamide.App_Start
     {
     }
 
-    public static class UserManager
+    public static class AppUserManager
     {
         public static async Task<CreateUserResult> CreateUser(string userName, string eMail, string password, string refName)
         {
@@ -66,7 +66,8 @@ namespace FinancePypamide.App_Start
             using (var context = new DatabaseContainer())
             {
                 var id = identity.ToLower();
-                return await context.Users.Where(u => (u.Email.ToLower() == id || u.Login.ToLower() == id) && u.Password == Md5.Encrypt(password)).FirstOrDefaultAsync();
+                var ep = Md5.Encrypt(password);
+                return await context.Users.Where(u => (u.Email.ToLower() == id || u.Login.ToLower() == id) && u.Password == ep).FirstOrDefaultAsync();
             }
         }
 
@@ -103,7 +104,7 @@ namespace FinancePypamide.App_Start
 
         public async Task<bool> Validate(string value)
         {
-            if (await UserManager.CheckUserName(value))
+            if (await AppUserManager.CheckUserName(value))
             {
                 Errors.Add("Пользователь с таким именем уже существует");
                 return false;

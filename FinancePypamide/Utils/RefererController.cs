@@ -9,7 +9,7 @@ namespace FinancePypamide.Utils
 {
     public class RefererController : UserController
     {
-        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        protected override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (Request.QueryString.Count == 0)
                 base.OnActionExecuting(filterContext);
@@ -17,8 +17,8 @@ namespace FinancePypamide.Utils
             {
                 var referer = Request.QueryString["ref"];
                 if (!string.IsNullOrWhiteSpace(referer) && Session["ref"] == null 
-                    && !UserManager.CheckUserName((string)Session["ref"])
-                    && UserManager.CheckUserName(Request.QueryString["ref"]))
+                    && !await AppUserManager.CheckUserName((string)Session["ref"])
+                    && await AppUserManager.CheckUserName(Request.QueryString["ref"]))
                     Session["ref"] = Request.QueryString["ref"];
 
                 var action = filterContext.ActionDescriptor.ActionName;

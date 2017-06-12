@@ -21,12 +21,20 @@ namespace FinancePypamide.Utils
             }
         }
 
-        public bool IsAutenticated
+        public bool IsAuthenticated
         {
             get
             {
                 return (Session["User"] as User) != null;
             }
+        }
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            if (ViewBag.IsAuthenticated = IsAuthenticated)
+                ViewBag.User = AppUser;
+            
         }
     }
 }

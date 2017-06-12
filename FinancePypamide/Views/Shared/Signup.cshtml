@@ -1,0 +1,34 @@
+﻿@model FinancePypamide.Models.LoginViewModel
+@using FinancePypamide.Utils
+@using FinancePypamide.Controllers
+
+<section id="loginForm">
+    @using (Html.BeginForm(nameof(LoginController.Signin), ControllerHelper.GetControllerName(nameof(LoginController)),
+        FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <h4>Введите данные</h4>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Login, new { @class = "col-md-2 control-label" })
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Login, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="col-md-3">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Вход" />
+            </div>
+        </div>
+        @Html.ActionLink("Регистрация", nameof(LoginController.Signin),
+    ControllerHelper.GetControllerName(nameof(LoginController)))
+    }
+</section>

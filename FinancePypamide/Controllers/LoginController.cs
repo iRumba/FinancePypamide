@@ -7,7 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 //using System.Web.Http;
+using Microsoft.AspNet.Identity.Owin;
 using System.Web.Mvc;
+using Microsoft.Owin.Security;
+
+using System.Web;
+using Microsoft.AspNet.Identity;
+using FinancePypamide.Diagram;
 
 namespace FinancePypamide.Controllers
 {
@@ -22,7 +28,7 @@ namespace FinancePypamide.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Signin(RegisterViewModel model)
+        public async Task<ActionResult> Signup(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -30,18 +36,40 @@ namespace FinancePypamide.Controllers
             }
 
             var referer = Session["ref"] as string ?? model.Referer;
-
-            var res = await UserManager.CreateUser(model.Login, model.Email, model.Password, referer);
+            
+            var res = await AppUserManager.CreateUser(model.Login, model.Email, model.Password, referer);
             if (!res.Success)
             {
                 AddErrors(res.Errors);
                 return View(model);
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(HomeController.Index), ControllerHelper.GetControllerName(nameof(HomeController)));
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Signin(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
+            var res = await AppUserManager.GetUser(model.Login, model.Password);
+            var ident = await new UserManager<User>().CreateIdentityAsync(res, DefaultAuthenticationTypes.ApplicationCookie);
+            HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties { IsPersistent = true }, res)
+            var returnUrl = "";
+            if (res != null)
+            {
+                AppUser = res;
+                
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction(nameof(HomeController.Index), ControllerHelper.GetControllerName(nameof(HomeController)));
+        }
 
         private void AddErrors(IEnumerable<string> errors)
         {

@@ -9,6 +9,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
 </head>
 <body>
+    @if (!(ViewBag.IsAuthenticated ?? false))
+    {
+        <div id="loginForm">
+            @Html.Partial("Signup")
+        </div>
+    }
+    else
+    {
+        <div>Hello, @ViewBag.User.Login</div>
+    }
+
     <div>
         @RenderBody()
     </div>
